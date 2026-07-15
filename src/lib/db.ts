@@ -45,6 +45,12 @@ async function dbConnect(): Promise<typeof mongoose> {
     throw e;
   }
 
+  // Register all models after connection so populate() always works in serverless
+  // This prevents "Schema hasn't been registered for model" errors on cold starts
+  await import("@/models/User");
+  await import("@/models/Course");
+  await import("@/models/Review");
+
   return cached.conn;
 }
 
