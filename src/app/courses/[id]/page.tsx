@@ -60,7 +60,7 @@ export default function CourseDetailPage() {
     if (data.success) {
       window.location.href = data.url;
     } else {
-      toast.error(data.message || "Payment failed to initialize");
+      toast.error(data.error || data.message || "Payment failed to initialize");
     }
     setPaymentLoading(false);
   };
