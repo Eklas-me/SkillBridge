@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IPaymentDoc extends Document {
   user: mongoose.Types.ObjectId;
-  course: mongoose.Types.ObjectId;
+  courses: mongoose.Types.ObjectId[];
   amount: number;
   transactionId: string;
   status: "pending" | "completed" | "failed" | "cancelled";
@@ -18,11 +18,12 @@ const PaymentSchema = new Schema<IPaymentDoc>(
       ref: "User",
       required: true,
     },
-    course: {
-      type: Schema.Types.ObjectId,
-      ref: "Course",
-      required: true,
-    },
+    courses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Course",
+      }
+    ],
     amount: {
       type: Number,
       required: true,

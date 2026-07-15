@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { FiStar, FiUsers, FiClock, FiBook, FiBarChart, FiGlobe, FiArrowLeft, FiCheckCircle } from "react-icons/fi";
+import { FiStar, FiUsers, FiClock, FiBook, FiBarChart, FiGlobe, FiArrowLeft, FiCheckCircle, FiShoppingCart } from "react-icons/fi";
 import { useAuth } from "@/providers/AuthProvider";
+import { useCart } from "@/providers/CartProvider";
 import CourseCard from "@/components/courses/CourseCard";
 import { ICourse, IReview } from "@/types";
 import toast from "react-hot-toast";
@@ -34,6 +35,7 @@ export default function CourseDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"overview" | "specs" | "reviews">("overview");
+  const { addToCart, isInCart } = useCart();
 
   useEffect(() => {
     fetch(`/api/courses/${id}`)
@@ -50,19 +52,29 @@ export default function CourseDetailPage() {
 
   const handleEnroll = async () => {
     if (!user) { toast.error("Please login to enroll"); router.push("/login"); return; }
-    setPaymentLoading(true);
-    const res = await fetch("/api/payment/init", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ courseId: id }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      window.location.href = data.url;
-    } else {
-      toast.error(data.error || data.message || "Payment failed to initialize");
+    
+    // Add to cart and redirect
+    if (course && !isInCart(course._id)) {
+      addToCart({
+        id: course._id,
+        title: course.title,
+        price: course.price,
+        image: course.image,
+        instructorName: typeof course.instructor === "object" ? course.instructor.name : "Unknown",
+      });
     }
-    setPaymentLoading(false);
+    router.push("/cart");
+  };
+
+  const handleAddToCart = () => {
+    if (!course) return;
+    addToCart({
+      id: course._id,
+      title: course.title,
+      price: course.price,
+      image: course.image,
+      instructorName: typeof course.instructor === "object" ? course.instructor.name : "Unknown",
+    });
   };
 
   const handleReview = async (e: React.FormEvent) => {
@@ -141,14 +153,33 @@ export default function CourseDetailPage() {
               <div className="p-5">
                 <p className="text-3xl font-extrabold text-slate-800 mb-1">৳{course.price}</p>
                 <p className="text-xs text-slate-400 mb-4">One-time payment · Lifetime access</p>
-                <button
-                  id="course-enroll-btn"
-                  onClick={handleEnroll}
-                  disabled={paymentLoading}
-                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl transition-colors disabled:opacity-60 mb-3"
-                >
-                  {paymentLoading ? "Redirecting..." : "Enroll Now — ৳" + course.price}
-                </button>
+                
+                <div className="space-y-3 mb-4">
+                  {course && isInCart(course._id) ? (
+                    <Link
+                      href="/cart"
+                      className="w-full py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-sm rounded-xl transition-colors flex items-center justify-center gap-2"
+                    >
+                      View in Cart <FiArrowLeft className="rotate-180" />
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={handleAddToCart}
+                      className="w-full py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-sm rounded-xl transition-colors flex items-center justify-center gap-2"
+                    >
+                      <FiShoppingCart /> Add to Cart
+                    </button>
+                  )}
+                  
+                  <button
+                    id="course-enroll-btn"
+                    onClick={handleEnroll}
+                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl transition-colors shadow-md"
+                  >
+                    Buy Now — ৳{course.price}
+                  </button>
+                </div>
+                
                 <p className="text-xs text-center text-slate-400">7-day money-back guarantee</p>
                 <div className="mt-4 space-y-2">
                   {[

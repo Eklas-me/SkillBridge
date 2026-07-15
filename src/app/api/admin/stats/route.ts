@@ -22,7 +22,7 @@ export async function GET() {
       Course.countDocuments(),
       User.countDocuments({ role: "user" }),
       User.countDocuments({ role: "admin" }),
-      Payment.find().sort({ createdAt: -1 }).limit(5).populate("user", "name email").populate("course", "title"),
+      Payment.find().sort({ createdAt: -1 }).limit(5).populate("user", "name email").populate("courses", "title"),
     ]);
 
     return NextResponse.json({

@@ -13,12 +13,21 @@ export async function POST(req: NextRequest) {
     }
 
     await dbConnect();
-    const { courseId } = await req.json();
+    const body = await req.json();
+    const courseIds = body.courseIds || (body.courseId ? [body.courseId] : []);
 
-    const course = await Course.findById(courseId);
-    if (!course) {
-      return NextResponse.json({ success: false, message: "Course not found" }, { status: 404 });
+    if (!courseIds.length) {
+      return NextResponse.json({ success: false, message: "No courses provided" }, { status: 400 });
     }
+
+    const courses = await Course.find({ _id: { $in: courseIds } });
+    if (!courses || courses.length === 0) {
+      return NextResponse.json({ success: false, message: "Courses not found" }, { status: 404 });
+    }
+
+    const totalAmount = courses.reduce((sum, c) => sum + c.price, 0);
+    const courseNames = courses.map((c) => c.title).join(", ");
+    const categories = Array.from(new Set(courses.map((c) => c.category))).join(", ");
 
     const tran_id = `TXN_${Date.now()}_${user.userId}`;
     const baseUrl = req.nextUrl.origin;
@@ -26,8 +35,8 @@ export async function POST(req: NextRequest) {
     // Save pending payment
     await Payment.create({
       user: user.userId,
-      course: courseId,
-      amount: course.price,
+      courses: courseIds,
+      amount: totalAmount,
       transactionId: tran_id,
       status: "pending",
     });
@@ -35,7 +44,7 @@ export async function POST(req: NextRequest) {
     const data = new URLSearchParams({
       store_id: SSL_CONFIG.store_id,
       store_passwd: SSL_CONFIG.store_passwd,
-      total_amount: course.price.toString(),
+      total_amount: totalAmount.toString(),
       currency: "BDT",
       tran_id,
       success_url: `${baseUrl}/api/payment/success`,
@@ -43,10 +52,10 @@ export async function POST(req: NextRequest) {
       cancel_url: `${baseUrl}/api/payment/cancel`,
       ipn_url: `${baseUrl}/api/payment/ipn`,
       shipping_method: "No",
-      product_name: course.title,
-      product_category: course.category,
+      product_name: courseNames.slice(0, 255), // SSLCommerz limits this length
+      product_category: categories.slice(0, 100),
       product_profile: "general",
-      cus_name: user.email,
+      cus_name: user.name || "User",
       cus_email: user.email,
       cus_add1: "Dhaka",
       cus_city: "Dhaka",

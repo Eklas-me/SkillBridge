@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FiBook, FiMail, FiPhone, FiMapPin, FiGithub, FiLinkedin, FiFacebook, FiTwitter } from "react-icons/fi";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <footer className="bg-slate-900 text-slate-300">
       {/* Main Footer */}

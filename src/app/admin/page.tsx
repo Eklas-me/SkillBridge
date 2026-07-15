@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
               <tr className="bg-slate-50">
                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Transaction ID</th>
                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">User</th>
-                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Course</th>
+                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Courses</th>
                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
               </tr>
@@ -98,7 +98,9 @@ export default function AdminDashboardPage() {
                       <p className="text-sm font-medium text-slate-800">{payment.user?.name || "Unknown"}</p>
                       <p className="text-xs text-slate-500">{payment.user?.email || "N/A"}</p>
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 truncate max-w-[200px]">{payment.course?.title || "N/A"}</td>
+                    <td className="px-6 py-4 text-sm text-slate-600 truncate max-w-[200px]" title={payment.courses?.map((c: any) => c.title).join(", ")}>
+                      {payment.courses?.map((c: any) => c.title).join(", ") || "N/A"}
+                    </td>
                     <td className="px-6 py-4 text-sm font-bold text-slate-700">৳{payment.amount}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/providers/AuthProvider";
-import { FiBook, FiMenu, FiX, FiUser, FiLogOut, FiPlusCircle, FiList, FiPieChart } from "react-icons/fi";
+import { useCart } from "@/providers/CartProvider";
+import { FiBook, FiMenu, FiX, FiUser, FiLogOut, FiPlusCircle, FiList, FiPieChart, FiShoppingCart } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 const publicLinks = [
@@ -32,6 +33,7 @@ export default function Navbar() {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { cart, totalItems } = useCart();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
@@ -88,8 +90,20 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Auth buttons */}
+          {/* Auth buttons & Cart */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Cart Icon */}
+            {!loading && user && user.role !== "admin" && (
+              <Link href="/cart" className="relative p-2 text-slate-600 hover:text-indigo-600 hover:bg-slate-50 rounded-full transition-colors mr-1">
+                <FiShoppingCart size={20} />
+                {totalItems > 0 && (
+                  <span className="absolute top-0.5 right-0 w-4 h-4 bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            )}
+
             {loading ? (
               <div className="w-8 h-8 rounded-full skeleton" />
             ) : user ? (
@@ -148,13 +162,26 @@ export default function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <button
-            id="nav-mobile-menu-btn"
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            {/* Mobile Cart Icon */}
+            {!loading && user && user.role !== "admin" && (
+              <Link href="/cart" className="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <FiShoppingCart size={20} />
+                {totalItems > 0 && (
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white">
+                    {totalItems}
+                  </span>
+                )}
+              </Link>
+            )}
+            <button
+              id="nav-mobile-menu-btn"
+              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+            </button>
+          </div>
         </div>
       </div>
 

@@ -19,11 +19,17 @@ export async function POST(req: NextRequest) {
     payment.status = "completed";
     await payment.save();
 
-    // Enroll user
-    await Course.findByIdAndUpdate(payment.course, { $inc: { totalStudents: 1 } });
-    await User.findByIdAndUpdate(payment.user, {
-      $addToSet: { enrolledCourses: payment.course },
-    });
+    // Enroll user in all courses
+    if (payment.courses && payment.courses.length > 0) {
+      await Course.updateMany(
+        { _id: { $in: payment.courses } },
+        { $inc: { totalStudents: 1 } }
+      );
+      
+      await User.findByIdAndUpdate(payment.user, {
+        $addToSet: { enrolledCourses: { $each: payment.courses } },
+      });
+    }
 
     return NextResponse.redirect(`${baseUrl}/payment/success?tran_id=${tran_id}`, 303);
   } catch (error) {

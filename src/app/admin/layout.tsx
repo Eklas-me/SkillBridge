@@ -9,6 +9,7 @@ import { FiHome, FiBookOpen, FiUsers, FiSettings, FiMenu, FiX, FiPieChart } from
 const sidebarLinks = [
   { href: "/admin", label: "Overview", icon: <FiPieChart /> },
   { href: "/admin/courses", label: "Manage Courses", icon: <FiBookOpen /> },
+  { href: "/admin/users", label: "Manage Users", icon: <FiUsers /> },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
