@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const payment = await Payment.findOne({ transactionId: tran_id });
     if (!payment) {
-      return NextResponse.redirect(`${baseUrl}/payment/fail?error=not_found`);
+      return NextResponse.redirect(`${baseUrl}/payment/fail?error=not_found`, 303);
     }
 
     payment.status = "completed";
@@ -25,9 +25,9 @@ export async function POST(req: NextRequest) {
       $addToSet: { enrolledCourses: payment.course },
     });
 
-    return NextResponse.redirect(`${baseUrl}/payment/success?tran_id=${tran_id}`);
+    return NextResponse.redirect(`${baseUrl}/payment/success?tran_id=${tran_id}`, 303);
   } catch (error) {
     console.error("Payment success error:", error);
-    return NextResponse.redirect(`${baseUrl}/payment/fail?error=server`);
+    return NextResponse.redirect(`${baseUrl}/payment/fail?error=server`, 303);
   }
 }

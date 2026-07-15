@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
     if (tran_id) {
       await Payment.findOneAndUpdate({ transactionId: tran_id }, { status: "failed" });
     }
-    return NextResponse.redirect(`${baseUrl}/payment/fail`);
+    return NextResponse.redirect(`${baseUrl}/payment/fail`, 303);
   } catch {
-    return NextResponse.redirect(`${baseUrl}/payment/fail`);
+    return NextResponse.redirect(`${baseUrl}/payment/fail`, 303);
   }
 }

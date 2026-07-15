@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
     if (tran_id) {
       await Payment.findOneAndUpdate({ transactionId: tran_id }, { status: "cancelled" });
     }
-    return NextResponse.redirect(`${baseUrl}/payment/cancel`);
+    return NextResponse.redirect(`${baseUrl}/payment/cancel`, 303);
   } catch {
-    return NextResponse.redirect(`${baseUrl}/payment/cancel`);
+    return NextResponse.redirect(`${baseUrl}/payment/cancel`, 303);
   }
 }
