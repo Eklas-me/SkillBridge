@@ -23,7 +23,6 @@ const userLinks = [
 const adminLinks = [
   { href: "/", label: "Home", icon: null },
   { href: "/courses", label: "Courses", icon: null },
-  { href: "/admin", label: "Dashboard", icon: <FiPieChart /> },
   { href: "/about", label: "About", icon: null },
 ];
 
