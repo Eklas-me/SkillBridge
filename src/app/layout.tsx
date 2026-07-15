@@ -5,6 +5,7 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import { CartProvider } from "@/providers/CartProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import FloatingCart from "@/components/layout/FloatingCart";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               }}
             />
             <Navbar />
+            <FloatingCart />
             <main className="flex-1">{children}</main>
             <Footer />
           </CartProvider>
