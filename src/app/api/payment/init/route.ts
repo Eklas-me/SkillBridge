@@ -62,8 +62,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: false, message: "Payment initialization failed" }, { status: 500 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Payment init error:", error);
-    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "Server error", error: error.message || String(error) }, { status: 500 });
   }
 }
