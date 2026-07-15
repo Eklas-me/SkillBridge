@@ -6,11 +6,6 @@ import Review from "@/models/Review";
 import bcrypt from "bcryptjs";
 
 export async function GET(req: NextRequest) {
-  // Only allow in development
-  if (process.env.NODE_ENV === "production") {
-    return NextResponse.json({ message: "Not allowed in production" }, { status: 403 });
-  }
-
   const secret = req.nextUrl.searchParams.get("secret");
   if (secret !== "seedskillbridge2024") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
