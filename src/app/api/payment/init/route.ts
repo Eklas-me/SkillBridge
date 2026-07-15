@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       product_name: courseNames.slice(0, 255), // SSLCommerz limits this length
       product_category: categories.slice(0, 100),
       product_profile: "general",
-      cus_name: user.name || "User",
+      cus_name: "SkillBridge User",
       cus_email: user.email,
       cus_add1: "Dhaka",
       cus_city: "Dhaka",
