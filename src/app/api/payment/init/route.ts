@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     }
 
     const tran_id = `TXN_${Date.now()}_${user.userId}`;
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = req.nextUrl.origin;
 
     // Save pending payment
     await Payment.create({

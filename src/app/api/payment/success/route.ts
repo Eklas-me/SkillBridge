@@ -4,9 +4,8 @@ import Payment from "@/models/Payment";
 import Course from "@/models/Course";
 import User from "@/models/User";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-
 export async function POST(req: NextRequest) {
+  const baseUrl = req.nextUrl.origin;
   try {
     await dbConnect();
     const formData = await req.formData();
