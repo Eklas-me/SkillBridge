@@ -12,8 +12,8 @@ export default function FloatingCart() {
   const [visible, setVisible] = useState(false);
   const [bounce, setBounce] = useState(false);
 
-  // Don't show on cart page or admin pages
-  const isHidden = pathname === "/cart" || pathname?.startsWith("/admin");
+  // Don't show on cart page, admin pages, or payment pages
+  const isHidden = pathname === "/cart" || pathname?.startsWith("/admin") || pathname?.startsWith("/payment");
 
   useEffect(() => {
     if (totalItems > 0 && !isHidden) {

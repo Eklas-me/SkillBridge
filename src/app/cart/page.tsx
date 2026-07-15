@@ -26,7 +26,6 @@ export default function CartPage() {
 
     setCheckingOut(true);
     try {
-      // Modify checkout logic to send an array of course IDs
       const courseIds = cart.map(c => c.id);
       
       const res = await fetch("/api/payment/init", {
@@ -37,7 +36,8 @@ export default function CartPage() {
 
       const data = await res.json();
       if (data.success && data.url) {
-        // Redirect to SSLCommerz
+        // Mark cart to be cleared after payment — do it before redirect
+        localStorage.removeItem("skillbridge_cart");
         window.location.href = data.url;
       } else {
         toast.error(data.message || "Failed to initiate payment");

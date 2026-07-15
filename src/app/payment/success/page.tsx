@@ -8,15 +8,15 @@ import { FiCheckCircle, FiBookOpen } from "react-icons/fi";
 export default function PaymentSuccessPage() {
   const { clearCart } = useCart();
 
-  // Clear the cart after successful payment
   useEffect(() => {
+    // Clear both state and localStorage immediately
     clearCart();
-  }, []);
+    localStorage.removeItem("skillbridge_cart");
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="pt-16 min-h-screen bg-slate-50 flex items-center justify-center p-6">
       <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
-        {/* Animated checkmark */}
         <div className="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
           <FiCheckCircle className="text-emerald-500 text-5xl" />
         </div>

@@ -61,6 +61,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setCart([]);
+    // Clear localStorage directly to avoid stale data on redirect
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("skillbridge_cart");
+    }
   };
 
   const isInCart = (id: string) => {
