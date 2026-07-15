@@ -81,7 +81,7 @@ export default function AddCoursePage() {
     const data = await res.json();
     if (data.success) {
       toast.success("Course created successfully! 🎉");
-      router.push("/courses/manage");
+      router.push("/admin/courses");
     } else {
       toast.error(data.message);
     }
@@ -91,15 +91,13 @@ export default function AddCoursePage() {
   if (loading || !user) return null;
 
   return (
-    <div className="pt-16 min-h-screen bg-slate-50">
-      <div className="bg-gradient-to-r from-indigo-900 to-slate-900 py-10">
-        <div className="container-custom">
-          <h1 className="text-2xl font-bold text-white mb-1">Add New Course</h1>
-          <p className="text-indigo-200 text-sm">Share your knowledge with thousands of learners</p>
-        </div>
+    <div className="space-y-6 max-w-6xl mx-auto">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-800">Add New Course</h1>
+        <p className="text-slate-500 mt-1">Share your knowledge with thousands of learners</p>
       </div>
 
-      <div className="container-custom py-8">
+      <div className="py-2">
         <form id="add-course-form" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main fields */}

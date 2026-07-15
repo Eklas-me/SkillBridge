@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/providers/AuthProvider";
-import { FiBook, FiMenu, FiX, FiUser, FiLogOut, FiPlusCircle, FiList } from "react-icons/fi";
+import { FiBook, FiMenu, FiX, FiUser, FiLogOut, FiPlusCircle, FiList, FiPieChart } from "react-icons/fi";
 import toast from "react-hot-toast";
 
 const publicLinks = [
@@ -22,8 +22,7 @@ const userLinks = [
 const adminLinks = [
   { href: "/", label: "Home", icon: null },
   { href: "/courses", label: "Courses", icon: null },
-  { href: "/courses/add", label: "Add Course", icon: <FiPlusCircle /> },
-  { href: "/courses/manage", label: "Manage Courses", icon: <FiList /> },
+  { href: "/admin", label: "Dashboard", icon: <FiPieChart /> },
   { href: "/about", label: "About", icon: null },
 ];
 
@@ -112,11 +111,11 @@ export default function Navbar() {
                       <p className="text-sm font-semibold text-slate-800 truncate">{user.email}</p>
                     </div>
                     <Link
-                      href={user.role === "admin" ? "/courses/manage" : "/my-learning"}
+                      href={user.role === "admin" ? "/admin" : "/my-learning"}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      <FiList className="text-indigo-500" /> {user.role === "admin" ? "Manage Courses" : "My Learning"}
+                      {user.role === "admin" ? <FiPieChart className="text-indigo-500" /> : <FiList className="text-indigo-500" />} {user.role === "admin" ? "Dashboard" : "My Learning"}
                     </Link>
                     <button
                       id="nav-logout-btn"
@@ -185,11 +184,11 @@ export default function Navbar() {
                     <span className="text-sm font-medium text-slate-700">{user.name}</span>
                   </div>
                   <Link
-                    href={user.role === "admin" ? "/courses/manage" : "/my-learning"}
+                    href={user.role === "admin" ? "/admin" : "/my-learning"}
                     onClick={() => setMenuOpen(false)}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg"
                   >
-                    <FiList className="text-indigo-500" /> {user.role === "admin" ? "Manage Courses" : "My Learning"}
+                    {user.role === "admin" ? <FiPieChart className="text-indigo-500" /> : <FiList className="text-indigo-500" />} {user.role === "admin" ? "Dashboard" : "My Learning"}
                   </Link>
                   <button
                     onClick={() => { handleLogout(); setMenuOpen(false); }}
