@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Review from "@/models/Review";
 import Course from "@/models/Course";
+import User from "@/models/User"; // Must be imported to register the model before populate() calls
 import { getCurrentUser } from "@/lib/auth";
 
 // POST /api/courses/:id/reviews
