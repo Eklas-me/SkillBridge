@@ -3,8 +3,9 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import { getCurrentUser } from "@/lib/auth";
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await context.params;
     const payload = await getCurrentUser();
     if (!payload || payload.role !== "admin") {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
@@ -13,11 +14,11 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     await dbConnect();
     
     // Don't allow admin to delete themselves
-    if (payload.userId === params.id) {
+    if (payload.userId === id) {
       return NextResponse.json({ success: false, message: "You cannot delete your own account" }, { status: 400 });
     }
 
-    const user = await User.findByIdAndDelete(params.id);
+    const user = await User.findByIdAndDelete(id);
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
