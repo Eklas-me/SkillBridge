@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
-import { FiHome, FiBookOpen, FiUsers, FiSettings, FiMenu, FiX, FiPieChart } from "react-icons/fi";
+import { FiHome, FiBookOpen, FiUsers, FiMenu, FiX, FiPieChart, FiExternalLink, FiShoppingBag } from "react-icons/fi";
 
 const sidebarLinks = [
   { href: "/admin", label: "Overview", icon: <FiPieChart /> },
@@ -67,6 +67,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               );
             })}
           </nav>
+
+          {/* Divider */}
+          <div className="mt-6 pt-6 border-t border-slate-100">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Live Site</p>
+            <div className="space-y-2">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+              >
+                <FiExternalLink className="text-emerald-600" />
+                View Homepage
+              </a>
+              <a
+                href="/courses"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+              >
+                <FiShoppingBag className="text-indigo-500" />
+                Browse Courses
+              </a>
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -99,6 +124,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   );
                 })}
               </nav>
+              {/* Live Site Buttons */}
+              <div className="mt-6 pt-6 border-t border-slate-100">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Live Site</p>
+                <div className="space-y-2">
+                  <a
+                    href="/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
+                  >
+                    <FiExternalLink className="text-emerald-600" />
+                    View Homepage
+                  </a>
+                  <a
+                    href="/courses"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                  >
+                    <FiShoppingBag className="text-indigo-500" />
+                    Browse Courses
+                  </a>
+                </div>
+              </div>
             </div>
           </aside>
         </div>

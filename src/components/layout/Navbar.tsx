@@ -43,6 +43,7 @@ export default function Navbar() {
   }, []);
 
   const links = !user ? publicLinks : user.role === "admin" ? adminLinks : userLinks;
+  const isAdminRoute = pathname?.startsWith("/admin");
 
   const handleLogout = async () => {
     await logout();
@@ -62,33 +63,38 @@ export default function Navbar() {
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group" id="navbar-logo">
+          <Link href={isAdminRoute ? "/admin" : "/"} className="flex items-center gap-2 group" id="navbar-logo">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-lg flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
               <FiBook className="text-white text-sm" />
             </div>
             <span className="text-xl font-bold text-slate-800">
               Skill<span className="text-indigo-600">Bridge</span>
             </span>
+            {isAdminRoute && (
+              <span className="ml-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[11px] font-bold rounded-full">Admin</span>
+            )}
           </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-1">
-            {links.map((l) => (
-              <Link
-                key={l.href + l.label}
-                href={l.href}
-                id={`nav-${l.label.toLowerCase().replace(/\s/g, "-")}`}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  pathname === l.href
-                    ? "bg-indigo-50 text-indigo-600"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
-              >
-                {l.icon && <span className="text-base">{l.icon}</span>}
-                {l.label}
-              </Link>
-            ))}
-          </div>
+          {/* Desktop Links — hide on admin routes */}
+          {!isAdminRoute && (
+            <div className="hidden md:flex items-center gap-1">
+              {links.map((l) => (
+                <Link
+                  key={l.href + l.label}
+                  href={l.href}
+                  id={`nav-${l.label.toLowerCase().replace(/\s/g, "-")}`}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    pathname === l.href
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                  }`}
+                >
+                  {l.icon && <span className="text-base">{l.icon}</span>}
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Auth buttons & Cart */}
           <div className="hidden md:flex items-center gap-3">
@@ -189,7 +195,7 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white border-t border-slate-100 shadow-lg">
           <div className="container-custom py-4 flex flex-col gap-2">
-            {links.map((l) => (
+            {!isAdminRoute && links.map((l) => (
               <Link
                 key={l.href + l.label}
                 href={l.href}
