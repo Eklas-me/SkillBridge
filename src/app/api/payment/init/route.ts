@@ -4,8 +4,6 @@ import Course from "@/models/Course";
 import Payment from "@/models/Payment";
 import { getCurrentUser } from "@/lib/auth";
 import { SSL_CONFIG } from "@/lib/sslcommerz";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const SSLCommerzPayment = require("sslcommerz-lts");
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,8 +32,10 @@ export async function POST(req: NextRequest) {
       status: "pending",
     });
 
-    const data = {
-      total_amount: course.price,
+    const data = new URLSearchParams({
+      store_id: SSL_CONFIG.store_id,
+      store_passwd: SSL_CONFIG.store_passwd,
+      total_amount: course.price.toString(),
       currency: "BDT",
       tran_id,
       success_url: `${baseUrl}/api/payment/success`,
@@ -52,16 +52,25 @@ export async function POST(req: NextRequest) {
       cus_city: "Dhaka",
       cus_country: "Bangladesh",
       cus_phone: "01700000000",
-    };
+    });
 
-    const sslcz = new SSLCommerzPayment(SSL_CONFIG.store_id, SSL_CONFIG.store_passwd, SSL_CONFIG.is_live);
-    const apiResponse = await sslcz.init(data);
+    const apiUrl = SSL_CONFIG.is_live 
+      ? "https://securepay.sslcommerz.com/gwprocess/v4/api.php"
+      : "https://sandbox.sslcommerz.com/gwprocess/v4/api.php";
 
-    if (apiResponse?.GatewayPageURL) {
-      return NextResponse.json({ success: true, url: apiResponse.GatewayPageURL });
+    const apiResponse = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: data.toString(),
+    });
+
+    const responseData = await apiResponse.json();
+
+    if (responseData?.GatewayPageURL) {
+      return NextResponse.json({ success: true, url: responseData.GatewayPageURL });
     }
 
-    return NextResponse.json({ success: false, message: "Payment initialization failed" }, { status: 500 });
+    return NextResponse.json({ success: false, message: responseData.failedreason || "Payment initialization failed" }, { status: 500 });
   } catch (error: any) {
     console.error("Payment init error:", error);
     return NextResponse.json({ success: false, message: "Server error", error: error.message || String(error) }, { status: 500 });
