@@ -17,8 +17,12 @@ export default function ManageCoursesPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  // Redirect if not logged in or not admin
   useEffect(() => {
-    if (!loading && !user) router.replace("/login");
+    if (!loading) {
+      if (!user) router.replace("/login");
+      else if (user.role !== "admin") router.replace("/");
+    }
   }, [user, loading, router]);
 
   useEffect(() => {

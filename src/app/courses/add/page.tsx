@@ -25,9 +25,12 @@ export default function AddCoursePage() {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Redirect if not logged in
+  // Redirect if not logged in or not admin
   useEffect(() => {
-    if (!loading && !user) router.replace("/login");
+    if (!loading) {
+      if (!user) router.replace("/login");
+      else if (user.role !== "admin") router.replace("/");
+    }
   }, [user, loading, router]);
 
   const set = (k: string, v: string) => {

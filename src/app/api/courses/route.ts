@@ -74,8 +74,8 @@ const courseSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    if (!user || user.role !== "admin") {
+      return NextResponse.json({ success: false, message: "Unauthorized: Admins only" }, { status: 401 });
     }
 
     await dbConnect();

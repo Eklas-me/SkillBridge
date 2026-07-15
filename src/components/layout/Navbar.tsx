@@ -13,12 +13,18 @@ const publicLinks = [
   { href: "/about", label: "About", icon: null },
 ];
 
-const privateLinks = [
-  { href: "/", label: "Home" },
-  { href: "/courses", label: "Courses" },
+const userLinks = [
+  { href: "/", label: "Home", icon: null },
+  { href: "/courses", label: "Courses", icon: null },
+  { href: "/about", label: "About", icon: null },
+];
+
+const adminLinks = [
+  { href: "/", label: "Home", icon: null },
+  { href: "/courses", label: "Courses", icon: null },
   { href: "/courses/add", label: "Add Course", icon: <FiPlusCircle /> },
-  { href: "/courses/manage", label: "My Courses", icon: <FiList /> },
-  { href: "/about", label: "About" },
+  { href: "/courses/manage", label: "Manage Courses", icon: <FiList /> },
+  { href: "/about", label: "About", icon: null },
 ];
 
 export default function Navbar() {
@@ -35,7 +41,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = user ? privateLinks : publicLinks;
+  const links = !user ? publicLinks : user.role === "admin" ? adminLinks : userLinks;
 
   const handleLogout = async () => {
     await logout();
