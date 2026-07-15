@@ -10,8 +10,8 @@ export async function GET(req: NextRequest) {
   if (secret !== "seedskillbridge2024") {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-
-  await dbConnect();
+  try {
+    await dbConnect();
 
   // Clear existing
   await User.deleteMany({});
@@ -176,17 +176,28 @@ export async function GET(req: NextRequest) {
 
   await Review.insertMany(reviewData);
 
-  return NextResponse.json({
-    success: true,
-    message: "Database seeded successfully!",
-    data: {
-      users: 4,
-      courses: createdCourses.length,
-      reviews: reviewData.length,
-      credentials: {
-        user: { email: "user@skillbridge.com", password: "User@123" },
-        admin: { email: "admin@skillbridge.com", password: "Admin@123" },
+    return NextResponse.json({
+      success: true,
+      message: "Database seeded successfully!",
+      data: {
+        users: 4,
+        courses: createdCourses.length,
+        reviews: reviewData.length,
+        credentials: {
+          user: { email: "user@skillbridge.com", password: "User@123" },
+          admin: { email: "admin@skillbridge.com", password: "Admin@123" },
+        },
       },
-    },
-  });
+    });
+  } catch (error: any) {
+    console.error("Seed error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Failed to seed database. Check Vercel logs or environment variables.",
+        error: error.message || String(error),
+      },
+      { status: 500 }
+    );
+  }
 }
