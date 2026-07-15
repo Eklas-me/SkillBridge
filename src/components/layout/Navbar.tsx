@@ -112,11 +112,11 @@ export default function Navbar() {
                       <p className="text-sm font-semibold text-slate-800 truncate">{user.email}</p>
                     </div>
                     <Link
-                      href="/courses/manage"
+                      href={user.role === "admin" ? "/courses/manage" : "/my-learning"}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50"
                       onClick={() => setDropdownOpen(false)}
                     >
-                      <FiList className="text-indigo-500" /> My Courses
+                      <FiList className="text-indigo-500" /> {user.role === "admin" ? "Manage Courses" : "My Learning"}
                     </Link>
                     <button
                       id="nav-logout-btn"
@@ -184,6 +184,13 @@ export default function Navbar() {
                     <FiUser className="text-indigo-500" />
                     <span className="text-sm font-medium text-slate-700">{user.name}</span>
                   </div>
+                  <Link
+                    href={user.role === "admin" ? "/courses/manage" : "/my-learning"}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg"
+                  >
+                    <FiList className="text-indigo-500" /> {user.role === "admin" ? "Manage Courses" : "My Learning"}
+                  </Link>
                   <button
                     onClick={() => { handleLogout(); setMenuOpen(false); }}
                     className="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg"
