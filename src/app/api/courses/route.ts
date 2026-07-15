@@ -13,17 +13,22 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search") || "";
     const category = searchParams.get("category") || "";
     const level = searchParams.get("level") || "";
-    const minPrice = Number(searchParams.get("minPrice")) || 0;
-    const maxPrice = Number(searchParams.get("maxPrice")) || 99999;
+    const hasMinPrice = searchParams.has("minPrice");
+    const hasMaxPrice = searchParams.has("maxPrice");
+    const minPrice = hasMinPrice ? Number(searchParams.get("minPrice")) : 0;
+    const maxPrice = hasMaxPrice ? Number(searchParams.get("maxPrice")) : null;
     const sort = searchParams.get("sort") || "newest";
     const page = Math.max(1, Number(searchParams.get("page")) || 1);
     const limit = Math.min(24, Number(searchParams.get("limit")) || 12);
 
-    // Build filter
+    // Build filter — only add price filter when explicitly requested
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filter: Record<string, any> = {
-      price: { $gte: minPrice, $lte: maxPrice },
-    };
+    const filter: Record<string, any> = {};
+    if (hasMinPrice || hasMaxPrice) {
+      filter.price = {};
+      if (hasMinPrice) filter.price.$gte = minPrice;
+      if (maxPrice !== null) filter.price.$lte = maxPrice;
+    }
     if (search) filter.$text = { $search: search };
     if (category) filter.category = category;
     if (level) filter.level = level;
@@ -33,8 +38,8 @@ export async function GET(req: NextRequest) {
     let sortObj: Record<string, any> = { createdAt: -1 };
     if (sort === "price_asc") sortObj = { price: 1 };
     else if (sort === "price_desc") sortObj = { price: -1 };
-    else if (sort === "rating") sortObj = { rating: -1 };
-    else if (sort === "popular") sortObj = { totalStudents: -1 };
+    else if (sort === "rating") sortObj = { rating: -1, createdAt: -1 };
+    else if (sort === "popular") sortObj = { totalStudents: -1, createdAt: -1 };
 
     const skip = (page - 1) * limit;
     const [courses, total] = await Promise.all([

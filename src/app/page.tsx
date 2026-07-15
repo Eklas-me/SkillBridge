@@ -93,7 +93,10 @@ export default function HomePage() {
   useEffect(() => {
     fetch("/api/courses?limit=8&sort=popular")
       .then((r) => r.json())
-      .then((d) => { if (d.success) setCourses(d.data); })
+      .then((d) => {
+        if (d.success) setCourses(d.data);
+      })
+      .catch((err) => console.error("Fetch courses error:", err))
       .finally(() => setLoadingCourses(false));
 
     fetch("/api/stats")
