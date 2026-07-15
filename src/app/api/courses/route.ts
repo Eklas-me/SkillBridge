@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Course from "@/models/Course";
+import User from "@/models/User"; // Must be imported to register the model before populate() is called
 import { getCurrentUser } from "@/lib/auth";
 import { z } from "zod";
 
@@ -57,8 +58,9 @@ export async function GET(req: NextRequest) {
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
     });
   } catch (error) {
-    console.error("Get courses error:", error);
-    return NextResponse.json({ success: false, message: "Server error" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Get courses error:", msg);
+    return NextResponse.json({ success: false, message: "Server error", detail: msg }, { status: 500 });
   }
 }
 
